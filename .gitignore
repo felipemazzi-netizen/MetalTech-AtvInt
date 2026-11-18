@@ -1,0 +1,10 @@
+.env
+node_modules/
+dist/
+__pycache__/
+.pytest_cache/
+output/
+*.class
+*.jar
+target/
+.DS_Store

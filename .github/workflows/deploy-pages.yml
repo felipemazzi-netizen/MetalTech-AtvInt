@@ -1,0 +1,49 @@
+name: Publicar MetalTech no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Instalar dependências (lockfile)
+        working-directory: frontend
+        run: npm ci --no-audit --no-fund
+      - name: Compilar React
+        working-directory: frontend
+        run: npm run build
+        env:
+          PAGES_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+      - name: Rota de compatibilidade /ar/
+        run: |
+          mkdir -p frontend/dist/ar
+          printf '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=../#ra"><title>MetalTech RA</title></head><body><p><a href="../#ra">Abrir RA no dashboard</a></p></body></html>' > frontend/dist/ar/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: frontend/dist
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4

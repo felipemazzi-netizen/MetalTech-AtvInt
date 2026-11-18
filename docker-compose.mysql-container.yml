@@ -1,0 +1,26 @@
+# Opcional: banco MySQL em container em vez do MySQL local. Usar em conjunto com docker-compose.yml.
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: metaltech
+      MYSQL_USER: metaltech
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Defina MYSQL_ROOT_PASSWORD}
+    ports: ["127.0.0.1:3307:3306"]
+    volumes: [metaltech_mysql_data:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost --silent"]
+      interval: 5s
+      retries: 30
+      timeout: 3s
+  backend:
+    environment:
+      DB_URL: "jdbc:mysql://mysql:3306/metaltech?useSSL=false&allowPublicKeyRetrieval=true"
+      DB_USER: metaltech
+    depends_on:
+      mysql:
+        condition: service_healthy
+volumes:
+  metaltech_mysql_data:

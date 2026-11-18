@@ -1,0 +1,25 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/metaltech?useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${DB_USER:metaltech}
+    password: ${DB_PASSWORD:metaltech_dev}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+metaltech:
+  ingest-key: ${INGEST_API_KEY}
+  admin-key: ${ADMIN_API_KEY}
+  # Valores hex da bancada: 0x0050 e 0x0331; pontos de CALIBRACAO, nao unidades prontas
+  tank-empty-raw: ${TANK_EMPTY_RAW:817}
+  tank-full-raw: ${TANK_FULL_RAW:80}
+  tank-stale-seconds: ${TANK_STALE_SECONDS:10}

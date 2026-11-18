@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>MetalTech - Realidade Aumentada (Objeto)</title>
+
+    <!-- A-Frame e MindAR Scripts -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      /* Estilo para a interface de instrução na tela */
+      #ui-container {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-family: sans-serif;
+        text-align: center;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Interface orientando a apontar para o objeto real -->
+    <div id-="ui-container">
+      <h3>MetalTech AR</h3>
+      <p>Aponte a câmera diretamente para o objeto/equipamento</p>
+    </div>
+
+    <!-- Cena A-Frame com MindAR configurado para o arquivo de alvo do objeto -->
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: yes; uiError: yes; uiScanning: yes;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets>
+        <!-- Se você tiver modelos 3D ou texturas adicionais, carregue aqui -->
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <!-- O index do target corresponde à ordem da imagem gerada no compilador (começa em 0) -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Elementos 3D que aparecerão projetados sobre o objeto real -->
+        <a-box
+          position="0 0.4 0"
+          scale="0.3 0.3 0.3"
+          material="color: #007bff; opacity: 0.8;"
+        ></a-box>
+        <a-text
+          value="Objeto Detectado!"
+          position="-0.6 0.9 0"
+          color="#FFF"
+          width="2"
+        ></a-text>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
